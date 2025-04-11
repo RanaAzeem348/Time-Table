@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌟 Rana Azeem's Dynamic Schedule 🌟</title>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f72585;
+      --gray: #adb5bd;
+    }
+    
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.9);
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      background: linear-gradient(to right, var(--primary), var(--warning));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    select, button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    select {
+      background-color: white;
+      border: 2px solid var(--primary);
+      min-width: 200px;
+    }
+    
+    button {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    button:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+    }
+    
+    .schedule-day {
+      background: white;
+      padding: 1.5rem 2rem;
+      margin: 1.5rem 0;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+    }
+    
+    .schedule-day:hover {
+      transform: translateY(-5px);
+    }
+    
+    .schedule-day h2 {
+      margin-top: 0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.8rem;
+    }
+    
+    .schedule-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0 0;
+    }
+    
+    .schedule-item {
+      padding: 1rem 1.5rem;
+      margin: 0.8rem 0;
+      background: rgba(67, 97, 238, 0.05);
+      border-radius: 10px;
+      border-left: 4px solid var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .schedule-item:hover {
+      background: rgba(67, 97, 238, 0.1);
+      transform: translateX(5px);
+    }
+    
+    .time {
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 120px;
+    }
+    
+    .task {
+      flex-grow: 1;
+    }
+    
+    .emoji {
+      font-size: 1.3rem;
+    }
+    
+    .current-day {
+      animation: pulse 2s infinite;
+      position: relative;
+    }
+    
+    .current-day::after {
+      content: "TODAY";
+      position: absolute;
+      right: 0;
+      top: 0;
+      background: var(--warning);
+      color: white;
+      padding: 0.2rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      transform: translateY(-50%);
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+    }
+    
+    .footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .schedule-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .time {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📅 Rana Azeem's Dynamic Schedule</h1>
+      <p>Your personalized daily routine planner that updates automatically</p>
+    </header>
+
+    <div class="controls">
+      <select id="daySelector">
+        <option value="monday">Monday</option>
+        <option value="tuesday">Tuesday</option>
+        <option value="wednesday">Wednesday</option>
+        <option value="thursday">Thursday</option>
+        <option value="friday">Friday</option>
+        <option value="saturday">Saturday</option>
+        <option value="sunday">Sunday</option>
+      </select>
+      <button onclick="showFullWeek()">
+        <span>📅</span> Show Full Week
+      </button>
+    </div>
+
+    <div id="scheduleContainer"></div>
+    
+    <div class="footer">
+      Made with ❤️ by Rana Azeem | Last Updated: <span id="currentDate"></span>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced schedule data with more details
+    const schedule = {
+      monday: [
+        { time: "5:30 AM", emoji: "🛌", task: "Wake up, freshen up, and morning routine" },
+        { time: "6:00 AM", emoji: "📜", task: "Virtual University online lecture session" },
+        { time: "7:00 AM", emoji: "☕️", task: "Healthy breakfast and short mental break" },
+        { time: "8:00 AM", emoji: "💻", task: "Coding practice (JavaScript/React projects)" },
+        { time: "10:00 AM", emoji: "🚶", task: "Travel to web development class" },
+        { time: "11:00 AM - 1:00 PM", emoji: "👨‍💼", task: "Web Development Class (Teaching/learning)" },
+        { time: "1:00 PM", emoji: "🏠", task: "Travel back home" },
+        { time: "2:00 PM", emoji: "🍽️", task: "Lunch and 30-minute power nap" },
+        { time: "3:00 PM", emoji: "📓", task: "VU assignments completion and revision" },
+        { time: "5:00 PM", emoji: "🚕", task: "Travel to office management class" },
+        { time: "6:00 PM - 8:30 PM", emoji: "🏫", task: "Office Management Class (Teaching)" },
+        { time: "9:00 PM", emoji: "🍽️", task: "Dinner with family and relaxation time" },
+        { time: "10:30 PM", emoji: "🛌", task: "Wind down and sleep" }
+      ],
+      tuesday: [
+        { time: "5:30 AM", emoji: "🛌", task: "Wake up and morning yoga/stretching" },
+        { time: "6:00 AM", emoji: "📜", task: "VU lecture review and note-taking" },
+        { time: "7:00 AM", emoji: "☕️", task: "Breakfast while listening to educational podcast" },
+        { time: "8:00 AM", emoji: "💻", task: "Advanced JavaScript concepts practice" },
+        { time: "10:00 AM", emoji: "🚶", task: "Travel to web development class" },
+        { time: "11:00 AM - 1:00 PM", emoji: "👨‍💼", task: "Web Development Class (Hands-on projects)" },
+        { time: "1:00 PM", emoji: "🏠", task: "Return home, quick lunch prep" },
+        { time: "2:00 PM", emoji: "🍽️", task: "Lunch and short meditation session" },
+        { time: "3:00 PM", emoji: "📓", task: "VU upcoming assignments planning" },
+        { time: "5:00 PM", emoji: "🚕", task: "Travel to office for evening class" },
+        { time: "6:00 PM - 8:30 PM", emoji: "🏫", task: "Office Management (Student evaluations)" },
+        { time: "9:00 PM", emoji: "🍽️", task: "Dinner and light reading" },
+        { time: "10:30 PM", emoji: "🛌", task: "Prepare for next day and sleep" }
+      ],
+      wednesday: [
+        { time: "5:30 AM", emoji: "🛌", task: "Wake up and gratitude journaling" },
+        { time: "6:00 AM", emoji: "📜", task: "VU lecture with focus on difficult concepts" },
+        { time: "7:00 AM", emoji: "☕️", task: "Breakfast and tech news review" },
+        { time: "8:00 AM", emoji: "💻", task: "Frontend development projects work" },
+        { time: "10:00 AM", emoji: "🚶", task: "Walk to web development class" },
+        { time: "11:00 AM - 1:00 PM", emoji: "👨‍💼", task: "Web Dev Class (Code reviews)" },
+        { time: "1:00 PM", emoji: "🏠", task: "Return home, call family" },
+        { time: "2:00 PM", emoji: "🍽️", task: "Lunch and short walk outside" },
+        { time: "3:00 PM", emoji: "📓", task: "VU group study session" },
+        { time: "5:00 PM", emoji: "🚕", task: "Travel to office management class" },
+        { time: "6:00 PM - 8:30 PM", emoji: "🏫", task: "Office Management (Case studies)" },
+        { time: "9:00 PM", emoji: "🍽️", task: "Dinner and personal project planning" },
+        { time: "10:30 PM", emoji: "🛌", task: "Relaxing music and sleep" }
+      ],
+      thursday: [
+        { time: "5:30 AM", emoji: "🛌", task: "Wake up and motivational video" },
+        { time: "6:00 AM", emoji: "📜", task: "VU lecture with practice quizzes" },
+        { time: "7:00 AM", emoji: "☕️", task: "Breakfast and daily goals setting" },
+        { time: "8:00 AM", emoji: "💻", task: "Backend development practice (Node.js)" },
+        { time: "10:00 AM", emoji: "🚶", task: "Travel to web development class" },
+        { time: "11:00 AM - 1:00 PM", emoji: "👨‍💼", task: "Web Dev Class (Database concepts)" },
+        { time: "1:00 PM", emoji: "🏠", task: "Return home, quick lunch" },
+        { time: "2:00 PM", emoji: "🍽️", task: "Review morning learnings" },
+        { time: "3:00 PM", emoji: "📓", task: "VU research and documentation" },
+        { time: "5:00 PM", emoji: "🚕", task: "Travel to office management class" },
+        { time: "6:00 PM - 8:30 PM", emoji: "🏫", task: "Office Management (Presentations)" },
+        { time: "9:00 PM", emoji: "🍽️", task: "Dinner and skill-building video" },
+        { time: "10:30 PM", emoji: "🛌", task: "Light reading and sleep" }
+      ],
+      friday: [
+        { time: "5:30 AM", emoji: "🛌", task: "Wake up and spiritual time" },
+        { time: "6:00 AM", emoji: "📜", task: "VU lecture weekly recap" },
+        { time: "7:00 AM", emoji: "☕️", task: "Breakfast and weekly review" },
+        { time: "8:00 AM", emoji: "💻", task: "Full-stack project development" },
+        { time: "11:00 AM", emoji: "🕌", task: "Jumu'ah prayer and reflection" },
+        { time: "1:00 PM", emoji: "🍽️", task: "Family lunch and relaxation" },
+        { time: "3:00 PM", emoji: "📓", task: "Plan weekend study sessions" },
+        { time: "5:00 PM", emoji: "🚕", task: "Travel to office management class" },
+        { time: "6:00 PM - 8:30 PM", emoji: "🏫", task: "Office Management (Weekly wrap-up)" },
+        { time: "9:00 PM", emoji: "🍽️", task: "Dinner and movie with family" },
+        { time: "10:30 PM", emoji: "🛌", task: "Early weekend sleep" }
+      ],
+      saturday: [
+        { time: "8:00 AM", emoji: "🍽️", task: "Weekend breakfast with family" },
+        { time: "9:00 AM", emoji: "📜", task: "Review all VU lectures from week" },
+        { time: "11:00 AM", emoji: "💻", task: "Work on personal coding projects" },
+        { time: "1:00 PM", emoji: "🍽️", task: "Lunch and social media check" },
+        { time: "2:00 PM", emoji: "🎮", task: "Gaming or hobby time" },
+        { time: "4:00 PM", emoji: "📚", task: "Read tech articles/books" },
+        { time: "6:00 PM", emoji: "🚶", task: "Evening walk or gym session" },
+        { time: "8:00 PM", emoji: "🎥", task: "Movie/documentary watching" },
+        { time: "10:30 PM", emoji: "🛌", task: "Wind down and sleep" }
+      ],
+      sunday: [
+        { time: "8:30 AM", emoji: "🍽️", task: "Leisurely breakfast" },
+        { time: "9:30 AM", emoji: "📝", task: "Plan upcoming week's schedule" },
+        { time: "11:00 AM", emoji: "💻", task: "Work on portfolio/website" },
+        { time: "1:00 PM", emoji: "🍽️", task: "Family lunch" },
+        { time: "2:30 PM", emoji: "📻", task: "Listen to educational podcasts" },
+        { time: "4:00 PM", emoji: "🧹", task: "Organize workspace and home" },
+        { time: "6:00 PM", emoji: "📱", task: "Connect with friends/family" },
+        { time: "8:00 PM", emoji: "🍽️", task: "Light dinner" },
+        { time: "9:30 PM", emoji: "🛀", task: "Relaxing bath and self-care" },
+        { time: "10:30 PM", emoji: "🛌", task: "Early sleep for Monday" }
+      ]
+    };
+
+    // Display today's date in footer
+    function updateCurrentDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+    }
+
+    // Show schedule for selected day
+    function showSchedule(day) {
+      const container = document.getElementById("scheduleContainer");
+      const dayData = schedule[day] || [];
+      
+      let html = `
+        <div class="schedule-day ${isToday(day) ? 'current-day' : ''}">
+          <h2>${capitalizeFirstLetter(day)} ${getDayEmoji(day)}</h2>
+          <ul class="schedule-list">`;
+      
+      dayData.forEach(item => {
+        html += `
+          <li class="schedule-item">
+            <span class="time">${item.time}</span>
+            <span class="emoji">${item.emoji}</span>
+            <span class="task">${item.task}</span>
+          </li>`;
+      });
+      
+      html += `</ul></div>`;
+      container.innerHTML = html;
+      
+      // Update selector to match displayed day
+      document.getElementById("daySelector").value = day;
+    }
+
+    // Show full week schedule
+    function showFullWeek() {
+      const container = document.getElementById("scheduleContainer");
+      let html = "";
+      
+      for (const day in schedule) {
+        const dayData = schedule[day];
+        
+        html += `
+          <div class="schedule-day ${isToday(day) ? 'current-day' : ''}">
+            <h2>${capitalizeFirstLetter(day)} ${getDayEmoji(day)}</h2>
+            <ul class="schedule-list">`;
+        
+        // Show first 5 items for weekly overview
+        dayData.slice(0, 5).forEach(item => {
+          html += `
+            <li class="schedule-item">
+              <span class="time">${item.time}</span>
+              <span class="emoji">${item.emoji}</span>
+              <span class="task">${item.task}</span>
+            </li>`;
+        });
+        
+        if (dayData.length > 5) {
+          html += `
+            <li class="schedule-item">
+              <span class="time">...</span>
+              <span class="emoji">➕</span>
+              <span class="task">${dayData.length - 5} more activities</span>
+            </li>`;
+        }
+        
+        html += `</ul></div>`;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    // Helper functions
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function getDayEmoji(day) {
+      const emojis = {
+        monday: "😅",
+        tuesday: "💪",
+        wednesday: "😊",
+        thursday: "📚",
+        friday: "🕌",
+        saturday: "🎉",
+        sunday: "🌞"
+      };
+      return emojis[day] || "📅";
+    }
+
+    function isToday(day) {
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+      return day === today;
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCurrentDate();
+      
+      // Auto-show today's schedule
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+      showSchedule(today);
+      
+      // Set up event listeners
+      document.getElementById("daySelector").addEventListener("change", (e) => {
+        showSchedule(e.target.value);
+      });
+    });
+  </script>
+</body>
+</html>
